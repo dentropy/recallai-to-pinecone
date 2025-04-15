@@ -67,6 +67,8 @@ def handle_webhook(route):
     
     print("About to write to DB")
     vector_db_record = {}
+    print("request_data")
+    pprint(request_data)
     try:
         if "event" in request_data["body"]:
             vector_db_record["_id"] = str(uuid.uuid4())
