@@ -9,6 +9,15 @@
 
 #### To Install
 
+**Dependencies for a Debian VPS**
+
+``` bash
+sudo apt -y update
+sudo apt -y install vim
+sudo apt -y install tmux
+sudo apt -y install git
+```
+
 
 **Configure Caddyfile**
 ``` bash
@@ -51,4 +60,13 @@ export PINECONE_API_KEY=pcsk_ENTROPY
 
 python app.py
 
+```
+
+## Test the Endpoint
+
+``` bash
+export YOUR_TLD=your-api-endpoint.com
+curl -X POST http://$YOUR_TLD/your-path \
+     -H "Content-Type: application/json" \
+     -d @docs/data.json
 ```
