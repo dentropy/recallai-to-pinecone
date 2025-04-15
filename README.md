@@ -78,3 +78,17 @@ curl -X POST https://$YOUR_TLD/your-path \
      -d @docs/data.json
 
 ```
+
+## Joining a call with recall.ai
+
+``` bash
+
+export RECALLAI_API_KEY="f3984b5dd01d5f0539a3f309db3a6333bb8f6200"
+
+# NOTE YOU MAY BE IN DIFFERENT AWS ZONE
+curl -X POST https://us-west-2.recall.ai/api/v1/bot \
+    -H "Authorization: Token $RECALLAI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d @docs/bot_create2.json | jq
+
+```

@@ -1,0 +1,18 @@
+{
+    "meeting_url": "https://meet.google.com/qoi-ysge-mid",
+    "recording_config": {
+        "transcript": {
+            "provider": {
+                "meeting_captions": {}
+            }
+        },
+        "real_time_transcription": {
+            "type": "webhook",
+            "destination_url": "https://webhooks.testnostr.com/realtime",
+            "events": [
+                "transcript.data",
+                "transcript.partial_data"
+            ]
+        }
+    }
+}

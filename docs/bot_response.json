@@ -1,0 +1,53 @@
+{
+    "id": "9945371d-390c-4ffc-9569-0ace3f1cc7ae",
+    "meeting_url": {
+      "meeting_id": "snv-gsqb-fvk",
+      "platform": "google_meet"
+    },
+    "bot_name": "Meeting Notetaker",
+    "join_at": "2025-04-15T03:21:10.213061Z",
+    "recording_config": {
+      "transcript": {
+        "provider": {
+          "meeting_captions": {}
+        }
+      },
+      "video_mixed_mp4": {},
+      "participant_events": {},
+      "meeting_metadata": {},
+      "realtime_endpoints": [
+        {
+          "type": "webhook",
+          "url": "https://webhooks.testnostr.com/realtime",
+          "events": [
+            "transcript.data",
+            "transcript.partial_data"
+          ]
+        }
+      ],
+      "video_mixed_layout": "speaker_view",
+      "video_mixed_participant_video_when_screenshare": "overlap",
+      "start_recording_on": "participant_join"
+    },
+    "status_changes": [],
+    "recordings": [],
+    "automatic_leave": {
+      "waiting_room_timeout": 1200,
+      "noone_joined_timeout": 1200,
+      "everyone_left_timeout": 2,
+      "in_call_not_recording_timeout": 3600,
+      "recording_permission_denied_timeout": 30,
+      "silence_detection": {
+        "timeout": 3600,
+        "activate_after": 1200
+      },
+      "bot_detection": {
+        "using_participant_events": {
+          "timeout": 600,
+          "activate_after": 1200
+        }
+      }
+    },
+    "calendar_meetings": [],
+    "metadata": {}
+  }
