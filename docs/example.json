@@ -1,0 +1,58 @@
+{
+    "timestamp": "2025-04-08T18:47:46.949309",
+    "method": "POST",
+    "headers": {
+      "Host": "webhooks.TLD.com",
+      "Content-Length": "666",
+      "Accept": "*/*",
+      "Content-Type": "application/json",
+      "X-Forwarded-For": "34.222.135.76",
+      "X-Forwarded-Host": "webhooks.TLD.com",
+      "X-Forwarded-Proto": "https",
+      "Accept-Encoding": "gzip"
+    },
+    "query_params": {},
+    "body": {
+      "event": "transcript.data",
+      "data": {
+        "data": {
+          "words": [
+            {
+              "text": "Let's take a look at this.",
+              "start_timestamp": {
+                "relative": 22.64436149597168,
+                "absolute": "2025-04-08T18:47:45.133944Z"
+              },
+              "end_timestamp": {
+                "relative": 24.42848014831543,
+                "absolute": "2025-04-08T18:47:46.918063Z"
+              }
+            }
+          ],
+          "participant": {
+            "id": 100,
+            "name": "TEST USER",
+            "is_host": true,
+            "platform": "unknown",
+            "extra_data": null
+          }
+        },
+        "transcript": {
+          "id": "1bc3fff0-b461-4764-9381-90cc5cf57b7e",
+          "metadata": {}
+        },
+        "realtime_endpoint": {
+          "id": "00dcbe53-eb43-43fd-9878-baafe2321c22",
+          "metadata": {}
+        },
+        "recording": {
+          "id": "83f21b51-0e03-4c89-9c19-de9331aa5b14",
+          "metadata": {}
+        },
+        "bot": {
+          "id": "4893542e-fa53-4357-8380-486f89923fe7",
+          "metadata": {}
+        }
+      }
+    }
+  }
