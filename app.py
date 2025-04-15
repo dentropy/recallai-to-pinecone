@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 from pinecone import Pinecone
 import uuid
+from pprint import pprint
 
 app = Flask(__name__)
 
@@ -73,6 +74,8 @@ def handle_webhook(route):
         print("We got an Error rewriteing the event to fit into Vecotr DV")
         print(e)
     try:
+        print("Trying to upsert")
+        pprint(request_data["body"])
         dense_index.upsert_records("example-namespace", [request_data["body"]])
     except Exception as e:
         print("Error inserting into Vector DB")
