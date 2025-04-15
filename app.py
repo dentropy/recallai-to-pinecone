@@ -67,13 +67,13 @@ def handle_webhook(route):
     print("About to write to DB")
     try:
         if "event" in request_data["body"]:
-            request_data["_id"] = str(uuid.uuid4())
-            request_data["chunk_text"] = request_data["body"]["data"]["data"]["words"][0]["text"]
+            request_data["body"]["_id"] = str(uuid.uuid4())
+            request_data["body"]["chunk_text"] = request_data["body"]["data"]["data"]["words"][0]["text"]
     except Exception as e:
         print("We got an Error rewriteing the event to fit into Vecotr DV")
         print(e)
     try:
-        dense_index.upsert_records("example-namespace", [request_data])
+        dense_index.upsert_records("example-namespace", [request_data["body"]])
     except Exception as e:
         print("Error inserting into Vector DB")
         print(e)

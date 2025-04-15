@@ -68,7 +68,7 @@ python app.py
 
 export YOUR_TLD=your-api-endpoint.com
 
-curl -X POST http://$YOUR_TLD/your-path \
+curl -X POST https://$YOUR_TLD/your-path \
      -H "Content-Type: application/json" \
      -d @docs/data.json
 
