@@ -1,18 +1,20 @@
 {
-    "meeting_url": "https://meet.google.com/qoi-ysge-mid",
+    "meeting_url": "$GOOGLE_MEET_URL",
     "recording_config": {
-        "transcript": {
-            "provider": {
-                "meeting_captions": {}
-            }
-        },
-        "real_time_transcription": {
-            "type": "webhook",
-            "destination_url": "https://webhooks.testnostr.com/realtime",
-            "events": [
-                "transcript.data",
-                "transcript.partial_data"
-            ]
+      "transcript": {
+        "provider": {
+          "meeting_captions": {}
         }
+      },
+      "realtime_endpoints": [
+        {
+          "type": "webhook",
+          "url": "https://$YOUR_TLD/realtime",
+          "events": [
+            "transcript.data",
+            "transcript.partial_data"
+          ]
+        }
+      ]
     }
 }

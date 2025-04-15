@@ -16,6 +16,7 @@ sudo apt -y update
 sudo apt -y install vim
 sudo apt -y install tmux
 sudo apt -y install git
+sudo apt -y install jq
 ```
 
 
@@ -83,12 +84,17 @@ curl -X POST https://$YOUR_TLD/your-path \
 
 ``` bash
 
-export RECALLAI_API_KEY="f3984b5dd01d5f0539a3f309db3a6333bb8f6200"
+export RECALLAI_API_KEY="fENTROPY"
+export GOOGLE_MEET_URL="https://meet.google.com/bjk-efke-gea"
+export YOUR_TLD="test.tld"
+envsubst < docs/bot_create.json > docs/bot_create_substituted.json
+cat docs/bot_create_substituted.json
+
 
 # NOTE YOU MAY BE IN DIFFERENT AWS ZONE
 curl -X POST https://us-west-2.recall.ai/api/v1/bot \
     -H "Authorization: Token $RECALLAI_API_KEY" \
     -H "Content-Type: application/json" \
-    -d @docs/bot_create2.json | jq
+    -d @docs/bot_create_substituted.json | jq
 
 ```
