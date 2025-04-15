@@ -70,6 +70,6 @@ export YOUR_TLD=your-api-endpoint.com
 
 curl -X POST http://$YOUR_TLD/your-path \
      -H "Content-Type: application/json" \
-     -d @docs/example.json
+     -d @docs/data.json
 
 ```

@@ -42,6 +42,8 @@ def handle_webhook(route):
         'query_params': request.args.to_dict(),
         'body': {}
     }
+    print("Raw Request Data")
+    print(request_data)
     
     # Try to parse the body as JSON, if possible
     try:
@@ -51,6 +53,8 @@ def handle_webhook(route):
             else:
                 request_data['body'] = request.data.decode('utf-8')
     except Exception as e:
+        print("Error decoding response")
+        print(str(e))
         request_data['body'] = f"Error decoding body: {str(e)}"
     
     # Read existing data
@@ -60,6 +64,7 @@ def handle_webhook(route):
     except json.JSONDecodeError:
         existing_data = []
     
+    print("About to write to DB")
     try:
         if "event" in request_data["body"]:
             request_data["_id"] = str(uuid.uuid4())
