@@ -76,6 +76,8 @@ def handle_webhook(route):
             vector_db_record["speaker"] = request_data["body"]["data"]["data"]["participant"]["name"]
             vector_db_record["from_timestamp"] = request_data["body"]["data"]["data"]["words"][0]["start_timestamp"]["absolute"]
             vector_db_record["to_timestamp"] = request_data["body"]["data"]["data"]["words"][0]["end_timestamp"]["absolute"]
+            vector_db_record["from_timestamp_relative"] = request_data["body"]["data"]["data"]["words"][0]["start_timestamp"]["relative"]
+            vector_db_record["to_timestamp_relative"] = request_data["body"]["data"]["data"]["words"][0]["end_timestamp"]["relative"]
             vector_db_record["transcript_id"] = request_data["body"]["data"]["transcript"]["id"]
             vector_db_record["record_id"] = request_data["body"]["data"]["recording"]["id"]
             vector_db_record["bot_id"] = request_data["body"]["data"]["bot"]["id"]
