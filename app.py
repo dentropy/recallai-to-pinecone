@@ -68,7 +68,7 @@ def handle_webhook(route):
     try:
         if "event" in request_data["body"]:
             request_data["_id"] = str(uuid.uuid4())
-            request_data["chunk_test"] = request_data["body"]["data"]["data"]["words"][0]["text"]
+            request_data["chunk_text"] = request_data["body"]["data"]["data"]["words"][0]["text"]
     except Exception as e:
         print("We got an Error rewriteing the event to fit into Vecotr DV")
         print(e)
