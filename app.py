@@ -31,12 +31,13 @@ if not os.path.exists(LOG_FILE):
     with open(LOG_FILE, 'w') as f:
         json.dump([], f)
 
-@app.route('/<path:anything>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def handle_webhook():
+@app.route('/<route>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def handle_webhook(route):
     # Create a request data dictionary
     request_data = {
         'timestamp': datetime.utcnow().isoformat(),
         'method': request.method,
+        'route': route,
         'headers': dict(request.headers),
         'query_params': request.args.to_dict(),
         'body': {}

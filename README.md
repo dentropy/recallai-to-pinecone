@@ -65,8 +65,11 @@ python app.py
 ## Test the Endpoint
 
 ``` bash
+
 export YOUR_TLD=your-api-endpoint.com
+
 curl -X POST http://$YOUR_TLD/your-path \
      -H "Content-Type: application/json" \
-     -d @docs/data.json
+     -d @docs/example.json
+
 ```
