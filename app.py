@@ -70,7 +70,9 @@ def handle_webhook(route):
     try:
         if "event" in request_data["body"]:
             vector_db_record["_id"] = str(uuid.uuid4())
-            vector_db_record["chunk_text"] = request_data["body"]["data"]["data"]["participant"]["name"]
+            vector_db_record["speaker"] = request_data["body"]["data"]["data"]["participant"]["name"]
+            vector_db_record["from_timestamp"] = request_data["body"]["data"]["data"]["words"][0]["start_timestamp"]["aboslute"]
+            vector_db_record["to_timestamp"] = request_data["body"]["data"]["data"]["words"][0]["end_timestamp"]["absolute"]
             vector_db_record["chunk_text"] = request_data["body"]["data"]["data"]["words"][0]["text"]
             vector_db_record["transcript_id"] = request_data["body"]["data"]["transcript"]["id"]
             vector_db_record["record_id"] = request_data["body"]["data"]["recording"]["id"]
