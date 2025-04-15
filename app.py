@@ -66,10 +66,17 @@ def handle_webhook(route):
         existing_data = []
     
     print("About to write to DB")
+    vector_db_record = {}
     try:
         if "event" in request_data["body"]:
-            request_data["body"]["_id"] = str(uuid.uuid4())
-            request_data["body"]["chunk_text"] = request_data["body"]["data"]["data"]["words"][0]["text"]
+            vector_db_record["_id"] = str(uuid.uuid4())
+            vector_db_record["chunk_text"] = request_data["body"]["data"]["data"]["participant"]["name"]
+            vector_db_record["chunk_text"] = request_data["body"]["data"]["data"]["words"][0]["text"]
+            vector_db_record["transcript_id"] = request_data["body"]["data"]["transcript"]["id"]
+            vector_db_record["record_id"] = request_data["body"]["data"]["recording"]["id"]
+            vector_db_record["bot_id"] = request_data["body"]["data"]["bot"]["id"]
+            print("vector_db_record")
+            pprint(vector_db_record)
     except Exception as e:
         print("We got an Error rewriteing the event to fit into Vecotr DV")
         print(e)
