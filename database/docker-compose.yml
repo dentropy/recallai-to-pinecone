@@ -1,0 +1,17 @@
+services:
+  paradedb:
+    image: paradedb/paradedb:latest
+    restart: always
+    container_name: paradedb
+    hostname: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres 
+      POSTGRES_DB: postgres
+    ports:
+      - 127.0.0.1:5435:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

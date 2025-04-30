@@ -98,3 +98,31 @@ curl -X POST https://us-west-2.recall.ai/api/v1/bot \
     -d @docs/bot_create_substituted.json | jq
 
 ```
+
+#### Ollama Config
+
+``` bash
+ollama pull nomic-embed-text
+export OLLAMA_HOST="http://localhost:11434"
+
+curl $OLLAMA_HOST/api/embeddings -d '{
+  "model": "nomic-embed-text",
+  "prompt": "Hello World"
+}'
+
+```
+
+
+``` bash
+
+export PG_CONN_STRING="postgres://postgres:postgres@localhost:5435/postgres"
+psql $PG_CONN_STRING
+
+
+psql $PG_CONN_STRING -f ./schema.sql
+
+
+curl -X POST http://localhost:5000/your-path \
+     -H "Content-Type: application/json" \
+     -d @docs/data.json
+```
