@@ -52,7 +52,7 @@ def send_requests(data_list):
             print(f"Response: {response.text}\n")
             
             # Wait for 3 seconds before the next request
-            time.sleep(3)
+            time.sleep(1)
             
         except requests.exceptions.RequestException as e:
             print(f"Error sending request for {item}: {e}")

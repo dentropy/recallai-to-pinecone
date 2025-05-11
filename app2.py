@@ -29,8 +29,8 @@ else:
 
 # Establish connection
 conn = psycopg2.connect(**db_params)
-cursor = conn.cursor()
 register_vector(conn)
+cursor = conn.cursor()
 # pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 # # Create a dense index with integrated embedding
 # index_name = "dense-index"
@@ -62,21 +62,17 @@ def chunk_my_data(transcript_id, from_timestamp_relative):
             from_timestamp_relative DESC
         LIMIT 1
     """
-    print("WE_GOT_TO_THE_TIME_CHECK")
-    print(transcript_id)
     cursor.execute(check_time_query, (str(transcript_id),))
-    print("WE_GOT_TO_THE_TIME_CHECK2")
     rows = cursor.fetchall()
-    print("Rows")
+    print("PAUL_WAS_HERE_15")
     print(rows)
     latest_chunked_timestamp = 0
     if (len(rows) != 0):
         latest_chunked_timestamp = rows[0][0]
     # If current timestamp if a Minute in the Future
     if( from_timestamp_relative < (latest_chunked_timestamp + 10)):
-        print("NOT GENERATING EMBEDDING")
+        print("WE_ARE_ALMOST_THERE")
         return False
-    print("GENERATING EMBEDDING")
     # Get the previous chats
     check_time_query = """
         SELECT
@@ -90,18 +86,14 @@ def chunk_my_data(transcript_id, from_timestamp_relative):
             from_timestamp_relative DESC
     """
     cursor.execute(check_time_query, (str(transcript_id),from_timestamp_relative - 15))
-    print("WE_GOT_TO_THE_TIME_CHECK2")
     rows = cursor.fetchall()
-    print("ROWS OF TEXT GO HERE")
-    embedding_text = ""
+    print("PAUL_WAS_HERE_17")
     print(rows)
+    embedding_text = ""
     from_timestamp_relative = rows[0][2]
     to_timestamp_relative = rows[len(rows) - 1][3]
     for row in rows:
         embedding_text += f"{row[0]}: {row[1]}\n\n"
-    print("embedding_text")
-    print(embedding_text)
-    # Actually Generate the Embedding
     url = f"http://localhost:11434/api/embeddings"
     data = {
         "model": "nomic-embed-text",
@@ -110,10 +102,7 @@ def chunk_my_data(transcript_id, from_timestamp_relative):
     response = requests.post(url, json=data)
     json_response = response.json()
     embedding = json_response["embedding"]
-    # Check 200 response
-    print("WE_GOT_THE_RESPONSE")
-    print(json_response)
-    print(json_response)
+    # TODO Check 200 response
     embedding_insert_data = {
         "transcript_id": transcript_id,
         "model_name": "nomic-embed-text",
@@ -121,7 +110,7 @@ def chunk_my_data(transcript_id, from_timestamp_relative):
         "to_timestamp_relative": to_timestamp_relative,
         "title": "TODO",
         "body": embedding_text,
-        "embedding": np.array(embedding)
+        "embedding": embedding
     }
     embedding_insert_tuple = (
         embedding_insert_data["transcript_id"],
@@ -150,13 +139,13 @@ def chunk_my_data(transcript_id, from_timestamp_relative):
         )
         
     """
-    pprint(insert_embedded_chats_t_query)
+    pprint("PAUL_IS_ABOUT_TO_INSERT")
     cursor.execute(
         insert_embedded_chats_t_query,
         embedding_insert_tuple
     )
+    conn.commit()
     print("WE_AT_LEAST_EXECUTED")
-    cursor.commit()
     print("WE_ARE_DONE_FOR_NOW")
     # Save to the Database
     pass
@@ -253,7 +242,7 @@ def handle_webhook(route):
             print(insert_params)
             cursor.execute(insert_query, insert_params)
             print("SENT_IT")
-            cursor.commit()
+            conn.commit()
             print("GOT_IT")
             chunk_my_data(
                 vector_db_record["transcript_id"],
