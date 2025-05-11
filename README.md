@@ -121,7 +121,6 @@ psql $PG_CONN_STRING
 
 psql $PG_CONN_STRING -f ./schema.sql
 
-
 curl -X POST http://localhost:5000/your-path \
      -H "Content-Type: application/json" \
      -d @docs/data.json

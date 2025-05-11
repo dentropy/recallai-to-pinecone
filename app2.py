@@ -7,7 +7,9 @@ import uuid
 from pprint import pprint
 import psycopg2
 from urllib.parse import urlparse
-
+import requests
+from pgvector.psycopg2 import register_vector
+import numpy as np
 app = Flask(__name__)
 
 DATABASE_URL = os.getenv('PG_CONN_STRING')
@@ -28,7 +30,7 @@ else:
 # Establish connection
 conn = psycopg2.connect(**db_params)
 cursor = conn.cursor()
-
+register_vector(conn)
 # pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 # # Create a dense index with integrated embedding
 # index_name = "dense-index"
@@ -46,6 +48,118 @@ cursor = conn.cursor()
 
 # Define the file where requests will be stored
 LOG_FILE = "webhook_requests.json"
+
+def chunk_my_data(transcript_id, from_timestamp_relative):
+    # Check the last 30 second increment in the Database
+    check_time_query = """
+        SELECT
+            from_timestamp_relative
+        FROM
+            embedded_chats_t
+        WHERE
+            transcript_id = %s
+        ORDER BY
+            from_timestamp_relative DESC
+        LIMIT 1
+    """
+    print("WE_GOT_TO_THE_TIME_CHECK")
+    print(transcript_id)
+    cursor.execute(check_time_query, (str(transcript_id),))
+    print("WE_GOT_TO_THE_TIME_CHECK2")
+    rows = cursor.fetchall()
+    print("Rows")
+    print(rows)
+    latest_chunked_timestamp = 0
+    if (len(rows) != 0):
+        latest_chunked_timestamp = rows[0][0]
+    # If current timestamp if a Minute in the Future
+    if( from_timestamp_relative < (latest_chunked_timestamp + 10)):
+        print("NOT GENERATING EMBEDDING")
+        return False
+    print("GENERATING EMBEDDING")
+    # Get the previous chats
+    check_time_query = """
+        SELECT
+            speaker, chunk_test, from_timestamp_relative, to_timestamp_relative
+        FROM
+            transcribed_snippits_t
+        WHERE
+            transcript_id = %s
+            AND from_timestamp_relative > %s
+        ORDER BY
+            from_timestamp_relative DESC
+    """
+    cursor.execute(check_time_query, (str(transcript_id),from_timestamp_relative - 15))
+    print("WE_GOT_TO_THE_TIME_CHECK2")
+    rows = cursor.fetchall()
+    print("ROWS OF TEXT GO HERE")
+    embedding_text = ""
+    print(rows)
+    from_timestamp_relative = rows[0][2]
+    to_timestamp_relative = rows[len(rows) - 1][3]
+    for row in rows:
+        embedding_text += f"{row[0]}: {row[1]}\n\n"
+    print("embedding_text")
+    print(embedding_text)
+    # Actually Generate the Embedding
+    url = f"http://localhost:11434/api/embeddings"
+    data = {
+        "model": "nomic-embed-text",
+        "prompt": embedding_text
+    }
+    response = requests.post(url, json=data)
+    json_response = response.json()
+    embedding = json_response["embedding"]
+    # Check 200 response
+    print("WE_GOT_THE_RESPONSE")
+    print(json_response)
+    print(json_response)
+    embedding_insert_data = {
+        "transcript_id": transcript_id,
+        "model_name": "nomic-embed-text",
+        "from_timestamp_relative": from_timestamp_relative,
+        "to_timestamp_relative": to_timestamp_relative,
+        "title": "TODO",
+        "body": embedding_text,
+        "embedding": np.array(embedding)
+    }
+    embedding_insert_tuple = (
+        embedding_insert_data["transcript_id"],
+        embedding_insert_data["model_name"],
+        embedding_insert_data["from_timestamp_relative"],
+        embedding_insert_data["to_timestamp_relative"],
+        embedding_insert_data["title"],
+        embedding_insert_data["body"],
+        embedding_insert_data["embedding"] 
+    )
+    # pprint(embedding_insert_data)
+    # print("embedding_insert_data")
+    insert_embedded_chats_t_query = """
+        INSERT INTO embedded_chats_t (
+            transcript_id,
+            model_name,
+            from_timestamp_relative,
+            to_timestamp_relative,
+            title,
+            body,
+            embedding
+        ) VALUES (
+            %s, %s, %s,
+            %s, %s, %s,
+            %s
+        )
+        
+    """
+    pprint(insert_embedded_chats_t_query)
+    cursor.execute(
+        insert_embedded_chats_t_query,
+        embedding_insert_tuple
+    )
+    print("WE_AT_LEAST_EXECUTED")
+    cursor.commit()
+    print("WE_ARE_DONE_FOR_NOW")
+    # Save to the Database
+    pass
 
 # Ensure the file exists and initialize it as an empty list if it doesn't
 if not os.path.exists(LOG_FILE):
@@ -91,7 +205,10 @@ def handle_webhook(route):
     pprint(request_data)
     try:
         if "event" in request_data["body"]:
-            vector_db_record["_id"] = str(uuid.uuid4())
+            print("\n\nWE_GOT_HERE\n\n")
+            print("request_data")
+            pprint(request_data)
+            # vector_db_record["_id"] = str(uuid.uuid4())
             vector_db_record["chunk_text"] = request_data["body"]["data"]["data"]["words"][0]["text"]
             vector_db_record["speaker"] = request_data["body"]["data"]["data"]["participant"]["name"]
             vector_db_record["from_timestamp"] = request_data["body"]["data"]["data"]["words"][0]["start_timestamp"]["absolute"]
@@ -105,7 +222,6 @@ def handle_webhook(route):
             pprint(vector_db_record)
             insert_query = """
                 INSERT INTO transcribed_snippits_t (
-                    id,
                     chunk_test,
                     speaker,
                     from_timestamp,
@@ -118,12 +234,11 @@ def handle_webhook(route):
                 ) VALUES (
                     %s, %s, %s,
                     %s, %s, %s,
-                    %s, %s, %s,
-                    %s
+                    %s, %s, %s
                 )
             """
             insert_params = (
-                vector_db_record["_id"],
+                # vector_db_record["_id"],
                 vector_db_record["chunk_text"],
                 vector_db_record["speaker"],
                 vector_db_record["from_timestamp"],
@@ -135,10 +250,15 @@ def handle_webhook(route):
                 vector_db_record["bot_id"]
             )
             print("ALMOST")
+            print(insert_params)
             cursor.execute(insert_query, insert_params)
             print("SENT_IT")
-            conn.commit()
+            cursor.commit()
             print("GOT_IT")
+            chunk_my_data(
+                vector_db_record["transcript_id"],
+                vector_db_record["from_timestamp_relative"]
+            )
     except Exception as e:
         print("We got an Error rewriteing the event to fit into Vecotr DB")
         print(e)

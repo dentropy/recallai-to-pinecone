@@ -1,7 +1,7 @@
 CREATE EXTENSION vector;
 
 CREATE TABLE IF NOT EXISTS transcribed_snippits_t (
-    id VARCHAR NOT NULL UNIQUE,
+    id SERIAL PRIMARY KEY,
     chunk_test VARCHAR,
     speaker VARCHAR,
     from_timestamp VARCHAR,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS embedded_chats_t (
     model_name VARCHAR,
     from_timestamp_relative FLOAT,
     to_timestamp_relative FLOAT,
-    title TEXT NOT NULL,
+    title TEXT,
     body TEXT NOT NULL,
     embedding VECTOR(768)
 );
