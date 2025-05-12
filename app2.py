@@ -5,11 +5,12 @@ import os
 from pinecone import Pinecone
 import uuid
 from pprint import pprint
+
 import psycopg2
 from urllib.parse import urlparse
 import requests
 from pgvector.psycopg2 import register_vector
-import numpy as np
+
 app = Flask(__name__)
 
 DATABASE_URL = os.getenv('PG_CONN_STRING')

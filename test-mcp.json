@@ -1,0 +1,14 @@
+{
+    "mcpServers": {
+      "recall": {
+        "command": "python3",
+        "args": ["/home/dentropy/Projects/recallai-to-pinecone/recall_mcp.py"],
+        "env": {
+          "RECALL_PG_CONN_STRING": "postgres://postgres:postgres@localhost:5435/postgres",
+          "RECALL_CHAT_ID": "db4cedd7-f803-4952-9822-05a4d5d6678b",
+          "OLLAMA_EMBEDDING_MODEL":"nomic-embed-text",
+          "OLLAMA_EMBEDDING_URL":"http://localhost:11434/api/"
+        }
+      }
+    }
+  }

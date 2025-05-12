@@ -125,3 +125,36 @@ curl -X POST http://localhost:5000/your-path \
      -H "Content-Type: application/json" \
      -d @docs/data.json
 ```
+
+#### DATA
+
+``` bash
+
+python recall_mcp.py
+
+
+goose session --with-remote-extension "http://localhost:8000/sse"
+
+export SERVER_PORT=9999
+export CLIENT_PORT=9998
+npx @modelcontextprotocol/inspector /home/dentropy/Projects/recallai-to-pinecone/env/bin/python3 /home/dentropy/Projects/recallai-to-pinecone/recall_mcp.py
+
+
+export SERVER_PORT=9999
+export CLIENT_PORT=9998
+npx @modelcontextprotocol/inspector \
+-e RECALL_PG_CONN_STRING="postgres://postgres:postgres@localhost:5435/postgres" \
+-e RECALL_CHAT_ID="db4cedd7-f803-4952-9822-05a4d5d6678b" \
+-e OLLAMA_EMBEDDING_MODEL="nomic-embed-text" \
+-e OLLAMA_EMBEDDING_URL="http://localhost:11434/api/embeddings" \
+-- /home/dentropy/Projects/recallai-to-pinecone/env/bin/python3 \
+/home/dentropy/Projects/recallai-to-pinecone/recall_mcp.py
+ 
+
+export SERVER_PORT=9999
+export CLIENT_PORT=9998
+npx @modelcontextprotocol/inspector --config ./test-mcp.json --server recall
+
+```
+
+http://my-desktop:9998

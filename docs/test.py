@@ -63,3 +63,4 @@ if __name__ == "__main__":
     with open('./convo_data.json', 'r') as file:
         json_data = json.load(file)
     send_requests(json_data)
+    print(convo_data["data"]["transcript"])
